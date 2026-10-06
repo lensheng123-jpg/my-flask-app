@@ -1,0 +1,88 @@
+﻿{% extends 'base.html' %}
+{% block title %}Dashboard &mdash; AI-SMS{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="mb-0">Decision Cases</h2>
+    <p class="text-muted mb-0">
+      Select a case to begin the seven-stage advisory workflow.
+      Total: {{ total }} cases.
+    </p>
+  </div>
+</div>
+
+<div class="alert alert-info py-2">
+  <strong>Core rule:</strong> AI advises only. Human approval is mandatory
+  before any final decision or action.
+</div>
+
+<h5 class="mt-4">Development Cases</h5>
+<table class="table table-hover align-middle">
+  <thead class="table-dark">
+    <tr>
+      <th>Case ID</th><th>Title</th><th>Category</th>
+      <th class="text-center">Evidence</th>
+      <th class="text-center">Options</th>
+      <th>Decision</th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in dev_cases %}
+    <tr>
+      <td><code>{{ c.case_id }}</code></td>
+      <td>{{ c.title }}</td>
+      <td><span class="badge bg-secondary">{{ c.category }}</span></td>
+      <td class="text-center">{{ c.evidence_count }}</td>
+      <td class="text-center">{{ c.option_count }}</td>
+      <td>
+        {% if c.decision_status == 'human_confirmed' %}
+          <span class="badge bg-success">Confirmed</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Pending</span>
+        {% endif %}
+      </td>
+      <td class="text-end">
+        <a href="{{ url_for('case_detail', case_id=c.case_id) }}"
+           class="btn btn-sm btn-primary">Open</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h5 class="mt-4">Current (Live) Cases</h5>
+<table class="table table-hover align-middle">
+  <thead class="table-dark">
+    <tr>
+      <th>Case ID</th><th>Title</th><th>Category</th>
+      <th class="text-center">Evidence</th>
+      <th class="text-center">Options</th>
+      <th>Decision</th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in live_cases %}
+    <tr>
+      <td><code>{{ c.case_id }}</code></td>
+      <td>{{ c.title }}</td>
+      <td><span class="badge bg-info text-dark">{{ c.category }}</span></td>
+      <td class="text-center">{{ c.evidence_count }}</td>
+      <td class="text-center">{{ c.option_count }}</td>
+      <td>
+        {% if c.decision_status == 'human_confirmed' %}
+          <span class="badge bg-success">Confirmed</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Pending</span>
+        {% endif %}
+      </td>
+      <td class="text-end">
+        <a href="{{ url_for('case_detail', case_id=c.case_id) }}"
+           class="btn btn-sm btn-primary">Open</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

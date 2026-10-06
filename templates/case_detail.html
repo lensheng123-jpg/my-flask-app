@@ -1,0 +1,115 @@
+﻿{% extends 'base.html' %}
+{% block title %}{{ case.title }} &mdash; AI-SMS{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-secondary mb-3">
+  &larr; Back to Dashboard
+</a>
+
+<h2>{{ case.title }}</h2>
+<p class="text-muted">{{ case.decision_question }}</p>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header bg-primary text-white">Case Summary</div>
+      <div class="card-body">
+        <p class="mb-1"><strong>Case ID:</strong> <code>{{ case.case_id }}</code></p>
+        <p class="mb-1"><strong>Category:</strong>
+          <span class="badge bg-secondary">{{ case.category }}</span></p>
+        <p class="mb-1"><strong>Opened:</strong> {{ case.opened_date }}</p>
+        <p class="mb-1"><strong>Due:</strong> {{ case.decision_due_date }}</p>
+        <p class="mb-0"><strong>Intended outcome:</strong> {{ case.intended_outcome }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header bg-danger text-white">Risk &amp; Uncertainty</div>
+      <div class="card-body">
+        {% if analysis %}
+          <p class="mb-1"><strong>Risk lane:</strong>
+            <span class="badge bg-danger">{{ analysis.risk_lane }}</span></p>
+          <p class="mb-1"><strong>Risk basis:</strong> {{ analysis.risk_basis }}</p>
+          <p class="mb-0 text-muted"><strong>Uncertainty:</strong> {{ analysis.uncertainty_note }}</p>
+        {% else %}
+          <p class="text-muted mb-0">No risk analysis available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-3">
+  <div class="card-header bg-secondary text-white">Evidence Available</div>
+  <ul class="list-group list-group-flush">
+    {% for e in evidence %}
+    <li class="list-group-item">
+      <div class="d-flex justify-content-between">
+        <div>
+          <span class="badge bg-light text-dark border">{{ e.evidence_type }}</span>
+          <small class="text-muted ms-2">{{ e.evidence_id }} &mdash; {{ e.source_label }}</small>
+        </div>
+        <small class="text-muted">{{ e.recorded_date }}</small>
+      </div>
+      <p class="mb-1 mt-2">{{ e.text }}</p>
+      <small class="text-muted">Verification: {{ e.verification_status }}</small>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% if analysis %}
+<div class="card mt-3">
+  <div class="card-header bg-warning text-dark">Evidence Gaps &amp; Assumptions</div>
+  <div class="card-body">
+    <p class="mb-1"><strong>Gap:</strong> {{ analysis.evidence_gap }}</p>
+    <p class="mb-1"><strong>Stakeholder groups:</strong> {{ analysis.stakeholder_groups }}</p>
+    <p class="mb-1"><strong>Priorities:</strong> {{ analysis.stakeholder_priorities }}</p>
+    <p class="mb-0"><strong>Potential conflict:</strong> {{ analysis.potential_conflict }}</p>
+  </div>
+</div>
+{% endif %}
+
+<div class="card mt-3">
+  <div class="card-header bg-success text-white">Consultation Prompts</div>
+  <ul class="list-group list-group-flush">
+    {% if roles %}
+      {% for r in roles %}
+      <li class="list-group-item">
+        <strong>{{ r.role_name }}</strong> &mdash; {{ r.responsibility }}
+        <br><small class="text-muted">Why: {{ r.consultation_reason }}</small>
+      </li>
+      {% endfor %}
+    {% else %}
+      <li class="list-group-item text-muted">No consultation prompts for this case.</li>
+    {% endif %}
+  </ul>
+</div>
+
+<div class="card mt-3">
+  <div class="card-header bg-dark text-white">Policy References</div>
+  <ul class="list-group list-group-flush">
+    {% if clauses %}
+      {% for cl in clauses %}
+      <li class="list-group-item">
+        <small class="text-muted">
+          {{ cl.policy_id }} &mdash; {{ cl.policy_title }} (Section {{ cl.section }})
+        </small>
+        <p class="mb-0 mt-1">{{ cl.clause_text }}</p>
+      </li>
+      {% endfor %}
+    {% else %}
+      <li class="list-group-item text-muted">No policy clauses linked.</li>
+    {% endif %}
+  </ul>
+</div>
+
+<div class="mt-4">
+  <a href="{{ url_for('options', case_id=case.case_id) }}" class="btn btn-primary">
+    View Options &rarr;
+  </a>
+</div>
+
+{% endblock %}

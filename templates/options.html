@@ -1,0 +1,46 @@
+﻿{% extends 'base.html' %}
+{% block title %}Options &mdash; {{ case.title }}{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('case_detail', case_id=case.case_id) }}"
+   class="btn btn-sm btn-outline-secondary mb-3">&larr; Back to Case</a>
+
+<h2>Options (Unranked)</h2>
+<p class="text-muted">{{ case.decision_question }}</p>
+
+<div class="alert alert-warning py-2">
+  <strong>Reminder:</strong> Options are not ranked. The leader decides.
+</div>
+
+<div class="row g-3">
+  {% for o in options %}
+  <div class="col-md-4">
+    <div class="card h-100 border-primary">
+      <div class="card-header bg-primary text-white">
+        Option {{ o.display_order }}
+      </div>
+      <div class="card-body">
+        <h6 class="card-title">{{ o.option_text }}</h6>
+        <p class="mb-1 small"><strong>Benefit:</strong> {{ o.benefit }}</p>
+        <p class="mb-1 small"><strong>Drawback:</strong> {{ o.drawback }}</p>
+        <p class="mb-1 small"><strong>Dependency:</strong> {{ o.dependency }}</p>
+        <p class="mb-1 small"><strong>Short-term:</strong> {{ o.short_term_consequence }}</p>
+        <p class="mb-1 small"><strong>Long-term:</strong> {{ o.long_term_consequence }}</p>
+        <p class="mb-0 small text-muted"><strong>Uncertainty:</strong> {{ o.uncertainty }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="mt-4">
+  {% if decision and decision.confirmation_status == 'human_confirmed' %}
+    <a href="{{ url_for('action_plan', case_id=case.case_id) }}"
+       class="btn btn-success">View Action Plan &rarr;</a>
+  {% else %}
+    <a href="{{ url_for('decide', case_id=case.case_id) }}"
+       class="btn btn-warning">Proceed to Human Decision &rarr;</a>
+  {% endif %}
+</div>
+
+{% endblock %}

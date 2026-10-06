@@ -1,0 +1,68 @@
+﻿{% extends 'base.html' %}
+{% block title %}Audit &mdash; {{ case.title }}{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('action_plan', case_id=case.case_id) }}"
+   class="btn btn-sm btn-outline-secondary mb-3">&larr; Back to Action Plan</a>
+
+<h2>Audit &amp; Privacy Note</h2>
+<p class="text-muted">Case: <code>{{ case.case_id }}</code> &mdash; {{ case.title }}</p>
+
+<div class="card mb-3">
+  <div class="card-header bg-secondary text-white">Evidence Used</div>
+  <ul class="list-group list-group-flush">
+    {% for e in evidence %}
+    <li class="list-group-item">
+      <small class="text-muted">{{ e.evidence_id }}</small> &mdash; {{ e.text }}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header bg-warning text-dark">Assumptions &amp; Gaps</div>
+  <div class="card-body">
+    {% if analysis %}
+      <p class="mb-1">{{ analysis.evidence_gap }}</p>
+      <p class="mb-0 text-muted">{{ analysis.uncertainty_note }}</p>
+    {% else %}
+      <p class="text-muted mb-0">None recorded.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header bg-info text-white">Options Presented</div>
+  <ul class="list-group list-group-flush">
+    {% for o in options %}
+    <li class="list-group-item">
+      Option {{ o.display_order }}: {{ o.option_text }}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header bg-success text-white">Human Decision Record</div>
+  <div class="card-body">
+    {% if decision %}
+      <p class="mb-1"><strong>Decision:</strong> {{ decision.human_decision_text }}</p>
+      <p class="mb-1"><strong>Rationale:</strong> {{ decision.human_rationale }}</p>
+      <p class="mb-1"><strong>Status:</strong> {{ decision.confirmation_status }}</p>
+      <p class="mb-0"><strong>Recorded:</strong> {{ decision.decision_date }}</p>
+    {% else %}
+      <p class="text-muted mb-0">No human decision recorded.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header bg-dark text-white">Privacy &amp; Retention</div>
+  <div class="card-body">
+    <p class="mb-1">Synthetic data only. No real identifiers present.</p>
+    <p class="mb-1">Retention: demonstration only.</p>
+    <p class="mb-0">Developer feedback must be anonymised (BR10).</p>
+  </div>
+</div>
+
+{% endblock %}
